@@ -13,6 +13,7 @@ function Layout() {
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/leaflet">Leaflet</NavLink>
           <NavLink to="/maplibre">MapLibre</NavLink>
+          <NavLink to="/openlayers">OpenLayers</NavLink>
           <NavLink to="/about">About</NavLink>
         </nav>
       </header>

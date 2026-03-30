@@ -1,0 +1,109 @@
+// ===========================
+// OpenLayers-specific styles
+// ===========================
+
+// OL map fills container
+.ol-map {
+  width: 100%;
+  height: 100%;
+}
+
+// Style switcher (reuse same pattern as MapLibre)
+// Already defined in MapLibreMap.scss — shared via class names
+
+// Click-active cursor for OpenLayers
+.map-container.click-active .ol-map {
+  cursor: crosshair !important;
+}
+
+// Custom popup (positioned absolutely over map)
+.ol-popup {
+  position: absolute;
+  z-index: 100;
+  background: var(--bg, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  max-width: 280px;
+  transform: translate(-50%, calc(-100% - 12px));
+  pointer-events: auto;
+  font-family: inherit;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: var(--bg, #fff);
+    border-right: 1px solid var(--border, #e5e7eb);
+    border-bottom: 1px solid var(--border, #e5e7eb);
+  }
+}
+
+.ol-popup-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: var(--text-light, #6b7280);
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  border-radius: 3px;
+
+  &:hover {
+    color: var(--text, #1f2937);
+    background: rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Override OL default controls styling
+.ol-control {
+  border-radius: 6px !important;
+
+  button {
+    border-radius: 4px !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #333 !important;
+    font-size: 1.1rem !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 1) !important;
+    }
+  }
+}
+
+.ol-zoom {
+  top: 10px !important;
+  right: 10px !important;
+  left: auto !important;
+}
+
+.ol-scale-line {
+  bottom: 8px !important;
+  left: 8px !important;
+
+  .ol-scale-line-inner {
+    border-color: #333 !important;
+    color: #333 !important;
+    font-size: 11px !important;
+  }
+}
+
+// Attribution compact
+.ol-attribution {
+  font-size: 11px !important;
+  border-radius: 4px !important;
+
+  &:not(.ol-collapsed) {
+    background: rgba(255, 255, 255, 0.85) !important;
+    padding: 2px 6px !important;
+  }
+}

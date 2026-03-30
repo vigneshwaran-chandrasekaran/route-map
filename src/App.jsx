@@ -5,6 +5,7 @@ import About from './pages/About';
 import NotFound from './pages/NotFound';
 import LeafletMap from './pages/LeafletMap';
 import MapLibreMap from './pages/MapLibreMap';
+import OpenLayersMap from './pages/OpenLayersMap';
 import './App.scss';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="leaflet" element={<LeafletMap />} />
         <Route path="maplibre" element={<MapLibreMap />} />
+        <Route path="openlayers" element={<OpenLayersMap />} />
         <Route path="about" element={<About />} />
         <Route path="*" element={<NotFound />} />
       </Route>

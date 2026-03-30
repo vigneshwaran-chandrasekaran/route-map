@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const maps = [
   { path: '/leaflet', name: 'Leaflet', pkg: 'react-leaflet + leaflet', ready: true },
   { path: '/maplibre', name: 'MapLibre GL', pkg: 'react-map-gl + maplibre-gl', ready: true },
-  { path: '/openlayers', name: 'OpenLayers', pkg: 'ol', ready: false },
+  { path: '/openlayers', name: 'OpenLayers', pkg: 'ol', ready: true },
 ];
 
 function Home() {
