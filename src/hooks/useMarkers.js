@@ -31,5 +31,5 @@ export function useMarkers() {
     });
   }, []);
 
-  return { markers, addMarker, removeMarker, clearMarkers, reorderMarkers };
+  return { markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers };
 }

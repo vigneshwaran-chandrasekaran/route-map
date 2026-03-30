@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, LayersControl } from 'react-leaflet';
+import { useEffect, useState, useCallback } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, useMapEvents, LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import PlaceSearch from '../components/PlaceSearch';
 import MarkerList from '../components/MarkerList';
+import { SaveGroup, SavedGroups } from '../components/SavedGroups';
 import { useMarkers } from '../hooks/useMarkers';
+import { useSavedGroups } from '../hooks/useSavedGroups';
+import api from '../api/axios';
 import './LeafletMap.css';
 
 // Fix default marker icon issue with bundlers
@@ -123,13 +126,60 @@ function FitBounds({ markers }) {
   return null;
 }
 
+// Reverse geocode a map click and add marker
+function MapClickHandler({ enabled, onAdd }) {
+  useMapEvents({
+    click(e) {
+      if (!enabled) return;
+      const { lat, lng } = e.latlng;
+
+      api
+        .get('https://nominatim.openstreetmap.org/reverse', {
+          baseURL: '',
+          params: { lat, lon: lng, format: 'json' },
+          headers: { 'User-Agent': 'RouteMapApp/1.0' },
+        })
+        .then((res) => {
+          const name = res.data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+          onAdd({
+            id: res.data.place_id || Date.now(),
+            name,
+            lat,
+            lng,
+          });
+        })
+        .catch(() => {
+          // Fallback: add with coordinates as name
+          onAdd({
+            id: Date.now(),
+            name: `${lat.toFixed(4)}, ${lng.toFixed(4)}`,
+            lat,
+            lng,
+          });
+        });
+    },
+  });
+
+  return null;
+}
+
 function LeafletMap() {
-  const { markers, addMarker, removeMarker, clearMarkers, reorderMarkers } = useMarkers();
+  const { markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers } = useMarkers();
+  const { groups, saveGroup, deleteGroup } = useSavedGroups();
   const [showRoute, setShowRoute] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [clickToAdd, setClickToAdd] = useState(false);
 
   const totalDistance = getTotalDistance(markers);
   const routePositions = markers.map((m) => [m.lat, m.lng]);
+
+  const handleSaveGroup = (name) => {
+    saveGroup(name, markers);
+  };
+
+  const handleLoadGroup = (group) => {
+    setMarkers(group.markers);
+  };
 
   return (
     <div className="map-page">
@@ -149,6 +199,17 @@ function LeafletMap() {
         </div>
 
         <PlaceSearch onSelect={addMarker} />
+
+        <div className="click-to-add">
+          <label>
+            <input
+              type="checkbox"
+              checked={clickToAdd}
+              onChange={(e) => setClickToAdd(e.target.checked)}
+            />
+            Click on map to add marker
+          </label>
+        </div>
 
         {markers.length >= 2 && (
           <div className="route-info">
@@ -180,6 +241,9 @@ function LeafletMap() {
           onReorder={reorderMarkers}
           numbered
         />
+
+        <SaveGroup markers={markers} onSave={handleSaveGroup} />
+        <SavedGroups groups={groups} onLoad={handleLoadGroup} onDelete={deleteGroup} />
       </div>
 
       <div className="map-container">
@@ -201,6 +265,7 @@ function LeafletMap() {
           </LayersControl>
 
           <FitBounds markers={markers} />
+          <MapClickHandler enabled={clickToAdd} onAdd={addMarker} />
 
           {/* Route polyline */}
           {showRoute && markers.length >= 2 && (

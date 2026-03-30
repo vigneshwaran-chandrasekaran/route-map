@@ -370,6 +370,140 @@
   margin: 6px 0 !important;
 }
 
+/* Save group */
+.save-group {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.65rem;
+}
+
+.save-group-row {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.save-group-input {
+  flex: 1;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  background: var(--bg-secondary);
+  color: var(--text);
+  outline: none;
+  min-width: 0;
+}
+
+.save-group-input:focus {
+  border-color: var(--primary);
+}
+
+.btn-save {
+  padding: 0.45rem 0.85rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn-save:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.save-group-hint {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  margin-top: 0.35rem;
+}
+
+/* Saved groups */
+.saved-groups {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.saved-groups-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.saved-groups-toggle:hover {
+  background: var(--bg-secondary);
+}
+
+.toggle-icon {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+.saved-groups-list {
+  list-style: none;
+  border-top: 1px solid var(--border);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.saved-groups-list li {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  gap: 0.5rem;
+  transition: background 0.15s;
+}
+
+.saved-groups-list li:last-child {
+  border-bottom: none;
+}
+
+.saved-groups-list li:hover {
+  background: var(--bg-secondary);
+}
+
+.group-info {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.group-info strong {
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group-info small {
+  font-size: 0.7rem;
+  color: var(--text-light);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .sidebar-toggle {
