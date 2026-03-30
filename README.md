@@ -1,16 +1,48 @@
-# React + Vite
+# Route Map
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Multi-marker route map app with place search, route connectivity, and layer switching — built with React, Vite, and open-source map libraries.
 
-Currently, two official plugins are available:
+**Live Demo:** [https://route-map-five.vercel.app/](https://route-map-five.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- Search places via Nominatim (no API key needed)
+- Click on map to add markers with reverse geocoding
+- Route polylines between markers with distance calculation
+- Reorder, remove, and manage markers
+- Save/load/edit named marker groups (localStorage)
+- Multiple base layers (Street, Satellite, Topo, Dark, Light)
+- Optional overlay layers (Transport, Cycling, Hiking trails)
+- Responsive sidebar with mobile drawer
+- Dark mode support
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Maps
 
-## Expanding the ESLint configuration
+| Library | Route | Status |
+|---------|-------|--------|
+| Leaflet | `/leaflet` | Ready |
+| MapLibre GL JS | `/maplibre` | Coming Soon |
+| OpenLayers | `/openlayers` | Coming Soon |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+## Environment Variables (optional)
+
+Copy `.env.example` to `.env` and fill in any optional keys:
+
+```bash
+cp .env.example .env
+```
+
+## Tech Stack
+
+- React 19 + Vite 8
+- React Router v7
+- Leaflet + react-leaflet
+- Axios
+- Nominatim geocoding API
