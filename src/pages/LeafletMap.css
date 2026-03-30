@@ -65,6 +65,34 @@
   height: 100%;
 }
 
+/* Click-to-add toggle */
+.click-to-add {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+}
+
+.click-to-add label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.click-to-add input[type='checkbox'] {
+  accent-color: var(--primary);
+  width: 16px;
+  height: 16px;
+}
+
+/* Crosshair cursor when click-to-add is active */
+.map-container.click-active .leaflet-container {
+  cursor: crosshair;
+}
+
 /* Search box */
 .place-search {
   position: relative;

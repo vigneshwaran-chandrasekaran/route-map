@@ -246,7 +246,7 @@ function LeafletMap() {
         <SavedGroups groups={groups} onLoad={handleLoadGroup} onDelete={deleteGroup} />
       </div>
 
-      <div className="map-container">
+      <div className={`map-container ${clickToAdd ? 'click-active' : ''}`}>
         <MapContainer center={DEFAULT_CENTER} zoom={DEFAULT_ZOOM} className="map">
           <LayersControl position="topright">
             {/* Base layers — only one active at a time */}
