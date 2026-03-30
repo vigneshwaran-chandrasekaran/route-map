@@ -41,11 +41,21 @@ export function useSavedGroups() {
     setGroups((prev) => prev.filter((g) => g.id !== id));
   }, []);
 
+  const updateGroup = useCallback((id, name, markers) => {
+    setGroups((prev) =>
+      prev.map((g) =>
+        g.id === id
+          ? { ...g, name: name.trim(), markers, updatedAt: new Date().toISOString() }
+          : g
+      )
+    );
+  }, []);
+
   const renameGroup = useCallback((id, newName) => {
     setGroups((prev) =>
       prev.map((g) => (g.id === id ? { ...g, name: newName.trim() } : g))
     );
   }, []);
 
-  return { groups, saveGroup, deleteGroup, renameGroup };
+  return { groups, saveGroup, updateGroup, deleteGroup, renameGroup };
 }

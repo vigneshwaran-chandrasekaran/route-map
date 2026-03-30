@@ -455,6 +455,93 @@
   margin-top: 0.35rem;
 }
 
+/* Save group editing mode */
+.save-group.editing {
+  border-color: var(--primary);
+  background: rgba(100, 108, 255, 0.04);
+}
+
+.editing-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.btn-update {
+  background: #10b981;
+}
+
+.btn-update:hover:not(:disabled) {
+  background: #059669;
+}
+
+.edit-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  gap: 0.5rem;
+}
+
+.edit-actions .save-group-hint {
+  margin-top: 0;
+}
+
+.btn-cancel-edit {
+  padding: 0.3rem 0.65rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  color: var(--text-light);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.btn-cancel-edit:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* Group edit button */
+.group-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.btn-edit {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  transition: background 0.15s;
+  line-height: 1;
+}
+
+.btn-edit:hover {
+  background: rgba(100, 108, 255, 0.1);
+}
+
+.btn-edit:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.group-editing {
+  background: rgba(100, 108, 255, 0.06) !important;
+  border-left: 2px solid var(--primary);
+}
+
 /* Saved groups */
 .saved-groups {
   background: var(--bg);

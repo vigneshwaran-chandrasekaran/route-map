@@ -165,10 +165,11 @@ function MapClickHandler({ enabled, onAdd }) {
 
 function LeafletMap() {
   const { markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers } = useMarkers();
-  const { groups, saveGroup, deleteGroup } = useSavedGroups();
+  const { groups, saveGroup, updateGroup, deleteGroup } = useSavedGroups();
   const [showRoute, setShowRoute] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [clickToAdd, setClickToAdd] = useState(false);
+  const [editingGroup, setEditingGroup] = useState(null);
 
   const totalDistance = getTotalDistance(markers);
   const routePositions = markers.map((m) => [m.lat, m.lng]);
@@ -179,6 +180,20 @@ function LeafletMap() {
 
   const handleLoadGroup = (group) => {
     setMarkers(group.markers);
+  };
+
+  const handleEditGroup = (group) => {
+    setMarkers(group.markers);
+    setEditingGroup(group);
+  };
+
+  const handleUpdateGroup = (id, name) => {
+    updateGroup(id, name, markers);
+    setEditingGroup(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingGroup(null);
   };
 
   return (
@@ -242,8 +257,20 @@ function LeafletMap() {
           numbered
         />
 
-        <SaveGroup markers={markers} onSave={handleSaveGroup} />
-        <SavedGroups groups={groups} onLoad={handleLoadGroup} onDelete={deleteGroup} />
+        <SaveGroup
+          markers={markers}
+          onSave={handleSaveGroup}
+          editingGroup={editingGroup}
+          onUpdate={handleUpdateGroup}
+          onCancelEdit={handleCancelEdit}
+        />
+        <SavedGroups
+          groups={groups}
+          onLoad={handleLoadGroup}
+          onDelete={deleteGroup}
+          onEdit={handleEditGroup}
+          editingGroupId={editingGroup?.id}
+        />
       </div>
 
       <div className={`map-container ${clickToAdd ? 'click-active' : ''}`}>
