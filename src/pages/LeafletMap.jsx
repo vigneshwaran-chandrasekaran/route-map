@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, useMapEvents, LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -56,12 +56,16 @@ const TILE_LAYERS = {
 };
 
 // Free overlay layers
+const THUNDERFOREST_KEY = import.meta.env.VITE_THUNDERFOREST_API_KEY || '';
+
 const OVERLAY_LAYERS = {
-  transport: {
-    name: 'Transport Lines',
-    url: 'https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=6170aad10dfd42a38d4d8c709a536f38',
-    attribution: '&copy; Thunderforest',
-  },
+  ...(THUNDERFOREST_KEY && {
+    transport: {
+      name: 'Transport Lines',
+      url: `https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=${THUNDERFOREST_KEY}`,
+      attribution: '&copy; Thunderforest',
+    },
+  }),
   cycling: {
     name: 'Cycling Routes',
     url: 'https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png',
@@ -74,15 +78,19 @@ const OVERLAY_LAYERS = {
   },
 };
 
-// Numbered marker icon
+// Numbered marker icon (cached to avoid recreating on every render)
+const iconCache = new Map();
 function createNumberedIcon(number) {
-  return L.divIcon({
+  if (iconCache.has(number)) return iconCache.get(number);
+  const icon = L.divIcon({
     className: 'numbered-marker',
     html: `<div class="marker-pin"><span>${number}</span></div>`,
     iconSize: [30, 42],
     iconAnchor: [15, 42],
     popupAnchor: [0, -36],
   });
+  iconCache.set(number, icon);
+  return icon;
 }
 
 // Calculate distance between two lat/lng points in km (Haversine)
@@ -171,30 +179,41 @@ function LeafletMap() {
   const [clickToAdd, setClickToAdd] = useState(false);
   const [editingGroup, setEditingGroup] = useState(null);
 
-  const totalDistance = getTotalDistance(markers);
-  const routePositions = markers.map((m) => [m.lat, m.lng]);
+  const totalDistance = useMemo(() => getTotalDistance(markers), [markers]);
+  const routePositions = useMemo(() => markers.map((m) => [m.lat, m.lng]), [markers]);
 
-  const handleSaveGroup = (name) => {
+  const handleSaveGroup = useCallback((name) => {
     saveGroup(name, markers);
-  };
+  }, [saveGroup, markers]);
 
-  const handleLoadGroup = (group) => {
+  const handleLoadGroup = useCallback((group) => {
     setMarkers(group.markers);
-  };
+  }, [setMarkers]);
 
-  const handleEditGroup = (group) => {
+  const handleEditGroup = useCallback((group) => {
     setMarkers(group.markers);
     setEditingGroup(group);
-  };
+  }, [setMarkers]);
 
-  const handleUpdateGroup = (id, name) => {
+  const handleUpdateGroup = useCallback((id, name) => {
     updateGroup(id, name, markers);
     setEditingGroup(null);
-  };
+  }, [updateGroup, markers]);
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = useCallback(() => {
     setEditingGroup(null);
-  };
+  }, []);
+
+  const handleDeleteGroup = useCallback((id) => {
+    deleteGroup(id);
+    // If the deleted group was being edited, exit edit mode
+    setEditingGroup((prev) => (prev?.id === id ? null : prev));
+  }, [deleteGroup]);
+
+  const handleClearMarkers = useCallback(() => {
+    clearMarkers();
+    setEditingGroup(null);
+  }, [clearMarkers]);
 
   return (
     <div className="map-page">
@@ -252,12 +271,13 @@ function LeafletMap() {
         <MarkerList
           markers={markers}
           onRemove={removeMarker}
-          onClear={clearMarkers}
+          onClear={handleClearMarkers}
           onReorder={reorderMarkers}
           numbered
         />
 
         <SaveGroup
+          key={editingGroup?.id || 'new'}
           markers={markers}
           onSave={handleSaveGroup}
           editingGroup={editingGroup}
@@ -267,7 +287,7 @@ function LeafletMap() {
         <SavedGroups
           groups={groups}
           onLoad={handleLoadGroup}
-          onDelete={deleteGroup}
+          onDelete={handleDeleteGroup}
           onEdit={handleEditGroup}
           editingGroupId={editingGroup?.id}
         />

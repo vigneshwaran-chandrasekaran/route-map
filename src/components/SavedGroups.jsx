@@ -2,20 +2,9 @@ import { useState } from 'react';
 
 function SaveGroup({ markers, onSave, editingGroup, onUpdate, onCancelEdit }) {
   const [name, setName] = useState('');
+  const [editedName, setEditedName] = useState(editingGroup?.name || '');
 
   const isEditing = !!editingGroup;
-  const editName = isEditing ? editingGroup.name : '';
-
-  const [editedName, setEditedName] = useState('');
-
-  // Sync editedName when editingGroup changes
-  const [prevEditId, setPrevEditId] = useState(null);
-  if (editingGroup && editingGroup.id !== prevEditId) {
-    setPrevEditId(editingGroup.id);
-    setEditedName(editingGroup.name);
-  } else if (!editingGroup && prevEditId !== null) {
-    setPrevEditId(null);
-  }
 
   const handleSave = () => {
     if (!name.trim() || markers.length === 0) return;
@@ -108,7 +97,13 @@ function SavedGroups({ groups, onLoad, onDelete, onEdit, editingGroupId }) {
         <ul className="saved-groups-list">
           {groups.map((g) => (
             <li key={g.id} className={editingGroupId === g.id ? 'group-editing' : ''}>
-              <div className="group-info" onClick={() => onLoad(g)}>
+              <div
+                className="group-info"
+                role="button"
+                tabIndex={0}
+                onClick={() => onLoad(g)}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onLoad(g)}
+              >
                 <strong>{g.name}</strong>
                 <small>
                   {g.markers.length} places
@@ -120,6 +115,7 @@ function SavedGroups({ groups, onLoad, onDelete, onEdit, editingGroupId }) {
                   className="btn-edit"
                   onClick={() => onEdit(g)}
                   title="Edit group"
+                  aria-label={`Edit ${g.name}`}
                   disabled={editingGroupId === g.id}
                 >
                   ✎
@@ -128,6 +124,7 @@ function SavedGroups({ groups, onLoad, onDelete, onEdit, editingGroupId }) {
                   className="btn-remove"
                   onClick={() => onDelete(g.id)}
                   title="Delete group"
+                  aria-label={`Delete ${g.name}`}
                 >
                   ✕
                 </button>

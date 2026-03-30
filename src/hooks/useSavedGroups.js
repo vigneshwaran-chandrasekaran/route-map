@@ -51,11 +51,5 @@ export function useSavedGroups() {
     );
   }, []);
 
-  const renameGroup = useCallback((id, newName) => {
-    setGroups((prev) =>
-      prev.map((g) => (g.id === id ? { ...g, name: newName.trim() } : g))
-    );
-  }, []);
-
-  return { groups, saveGroup, updateGroup, deleteGroup, renameGroup };
+  return { groups, saveGroup, updateGroup, deleteGroup };
 }

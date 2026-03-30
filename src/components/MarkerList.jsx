@@ -5,7 +5,7 @@ function MarkerList({ markers, onRemove, onClear, onReorder, numbered }) {
     <div className="marker-list">
       <div className="marker-list-header">
         <h3>Markers ({markers.length})</h3>
-        <button className="btn-clear" onClick={onClear}>
+        <button className="btn-clear" onClick={onClear} aria-label="Clear all markers">
           Clear All
         </button>
       </div>
@@ -22,6 +22,7 @@ function MarkerList({ markers, onRemove, onClear, onReorder, numbered }) {
                   className="btn-reorder"
                   onClick={() => onReorder(i, i - 1)}
                   disabled={i === 0}
+                  aria-label={`Move ${m.name} up`}
                   title="Move up"
                 >
                   ▲
@@ -30,13 +31,14 @@ function MarkerList({ markers, onRemove, onClear, onReorder, numbered }) {
                   className="btn-reorder"
                   onClick={() => onReorder(i, i + 1)}
                   disabled={i === markers.length - 1}
+                  aria-label={`Move ${m.name} down`}
                   title="Move down"
                 >
                   ▼
                 </button>
               </div>
             )}
-            <button className="btn-remove" onClick={() => onRemove(m.id)}>
+            <button className="btn-remove" onClick={() => onRemove(m.id)} aria-label={`Remove ${m.name}`}>
               ✕
             </button>
           </li>

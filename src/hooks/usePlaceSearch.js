@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import api from '../api/axios';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
@@ -12,6 +12,15 @@ export function usePlaceSearch() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef(null);
+  const abortRef = useRef(null);
+
+  // Clean up debounce timer and abort controller on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, []);
 
   const search = useCallback((value) => {
     setQuery(value);
@@ -24,6 +33,10 @@ export function usePlaceSearch() {
     }
 
     debounceRef.current = setTimeout(async () => {
+      // Cancel any in-flight request
+      if (abortRef.current) abortRef.current.abort();
+      abortRef.current = new AbortController();
+
       setLoading(true);
       try {
         const res = await api.get(NOMINATIM_URL, {
@@ -38,6 +51,7 @@ export function usePlaceSearch() {
             // Nominatim requires a valid User-Agent
             'User-Agent': 'RouteMapApp/1.0',
           },
+          signal: abortRef.current.signal,
         });
         setResults(
           res.data.map((item) => ({
