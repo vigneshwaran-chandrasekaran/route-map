@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
 import LeafletMap from './pages/LeafletMap';
-import './App.css';
+import './App.scss';
 
 function App() {
   return (

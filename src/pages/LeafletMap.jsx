@@ -8,7 +8,7 @@ import { SaveGroup, SavedGroups } from '../components/SavedGroups';
 import { useMarkers } from '../hooks/useMarkers';
 import { useSavedGroups } from '../hooks/useSavedGroups';
 import api from '../api/axios';
-import './LeafletMap.css';
+import './LeafletMap.scss';
 
 // Fix default marker icon issue with bundlers
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';

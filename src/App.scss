@@ -1,0 +1,173 @@
+// Navigation
+header {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+nav {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+
+  a {
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 0.25rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+
+    &:hover,
+    &.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+  }
+}
+
+// Main content
+main {
+  flex: 1;
+  width: 100%;
+
+  // Constrain non-map pages
+  &:has(.page) {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  // Map pages use full width, no padding
+  &:has(.map-page) {
+    max-width: none;
+    padding: 0;
+  }
+}
+
+// Pages
+.page {
+  text-align: left;
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin: 1.5rem 0 0.75rem;
+  }
+
+  p {
+    color: var(--text-light);
+    margin-bottom: 0.75rem;
+  }
+}
+
+// Post list
+.post-list {
+  list-style: none;
+
+  li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+
+    strong {
+      text-transform: capitalize;
+    }
+
+    p {
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+// Error
+.error {
+  color: #ef4444;
+}
+
+// 404 page
+.not-found {
+  text-align: center;
+  padding-top: 4rem;
+
+  h1 {
+    font-size: 5rem;
+    color: var(--primary);
+  }
+}
+
+// Buttons
+.btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 6px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--primary-hover);
+    color: #fff;
+  }
+
+  &-disabled {
+    background: var(--border) !important;
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+// Footer
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1rem 2rem;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+
+// Map cards on Home page
+.map-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.map-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+  }
+
+  code {
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+
+  .btn {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.4rem 1.2rem;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+  }
+}

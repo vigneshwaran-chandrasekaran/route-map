@@ -1,3 +1,4 @@
+// Design tokens
 :root {
   --primary: #646cff;
   --primary-hover: #535bf2;
@@ -24,6 +25,7 @@
   }
 }
 
+// Reset
 * {
   margin: 0;
   padding: 0;
@@ -40,11 +42,12 @@ body {
   flex-direction: column;
 }
 
+// Links
 a {
   color: var(--primary);
   text-decoration: none;
-}
 
-a:hover {
-  color: var(--primary-hover);
+  &:hover {
+    color: var(--primary-hover);
+  }
 }
