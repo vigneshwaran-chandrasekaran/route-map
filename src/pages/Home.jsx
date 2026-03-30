@@ -1,37 +1,33 @@
-import { useState, useEffect } from 'react';
-import api from '../api/axios';
+import { Link } from 'react-router-dom';
+
+const maps = [
+  { path: '/leaflet', name: 'Leaflet', pkg: 'react-leaflet + leaflet', ready: true },
+  { path: '/maplibre', name: 'MapLibre GL', pkg: 'react-map-gl + maplibre-gl', ready: false },
+  { path: '/openlayers', name: 'OpenLayers', pkg: 'ol', ready: false },
+];
 
 function Home() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    api
-      .get('/posts', { params: { _limit: 5 } })
-      .then((res) => setPosts(res.data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
-
   return (
     <div className="page">
-      <h1>Home</h1>
-      <p>Welcome to Route Map — a simple React app with routing and API integration.</p>
+      <h1>Route Map</h1>
+      <p>Multi-marker map app with place search — built with three open-source map libraries.</p>
 
-      <h2>Recent Posts</h2>
-      {loading && <p>Loading...</p>}
-      {error && <p className="error">Error: {error}</p>}
-      {!loading && !error && (
-        <ul className="post-list">
-          {posts.map((post) => (
-            <li key={post.id}>
-              <strong>{post.title}</strong>
-              <p>{post.body}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+      <h2>Available Maps</h2>
+      <div className="map-cards">
+        {maps.map((m) => (
+          <div key={m.path} className={`map-card ${!m.ready ? 'disabled' : ''}`}>
+            <h3>{m.name}</h3>
+            <code>{m.pkg}</code>
+            {m.ready ? (
+              <Link to={m.path} className="btn">
+                Open Map
+              </Link>
+            ) : (
+              <span className="btn btn-disabled">Coming Soon</span>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

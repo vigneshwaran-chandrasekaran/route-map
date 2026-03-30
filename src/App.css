@@ -113,3 +113,48 @@ footer {
   color: var(--text-light);
   font-size: 0.85rem;
 }
+
+/* Map cards on Home page */
+.map-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.map-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+  background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.map-card h3 {
+  margin: 0;
+}
+
+.map-card code {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+.map-card .btn {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  padding: 0.4rem 1.2rem;
+}
+
+.map-card.disabled {
+  opacity: 0.5;
+}
+
+.btn-disabled {
+  background: var(--border) !important;
+  cursor: default;
+  pointer-events: none;
+}
