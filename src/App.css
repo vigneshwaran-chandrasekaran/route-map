@@ -1,0 +1,115 @@
+/* Navigation */
+header {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+
+nav {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  gap: 1.5rem;
+}
+
+nav a {
+  color: var(--text-light);
+  font-weight: 500;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+nav a:hover,
+nav a.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* Main content */
+main {
+  flex: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+}
+
+/* Pages */
+.page {
+  text-align: left;
+}
+
+.page h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.page h2 {
+  font-size: 1.25rem;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.page p {
+  color: var(--text-light);
+  margin-bottom: 0.75rem;
+}
+
+/* Post list */
+.post-list {
+  list-style: none;
+}
+
+.post-list li {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-list li strong {
+  text-transform: capitalize;
+}
+
+.post-list li p {
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* Error */
+.error {
+  color: #ef4444;
+}
+
+/* 404 page */
+.not-found {
+  text-align: center;
+  padding-top: 4rem;
+}
+
+.not-found h1 {
+  font-size: 5rem;
+  color: var(--primary);
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1.5rem;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: var(--primary-hover);
+  color: #fff;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1rem 2rem;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
