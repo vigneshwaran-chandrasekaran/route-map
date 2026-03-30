@@ -2,30 +2,59 @@
 
 .map-page {
   display: flex;
-  height: calc(100vh - 120px);
-  gap: 0;
+  height: calc(100vh - 57px);
+  position: relative;
 }
 
+/* Sidebar toggle (mobile only) */
+.sidebar-toggle {
+  display: none;
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1100;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  line-height: 1;
+}
+
+/* Sidebar */
 .map-sidebar {
-  width: 340px;
-  min-width: 340px;
-  padding: 1rem;
+  width: 360px;
+  min-width: 360px;
+  padding: 1.25rem;
   border-right: 1px solid var(--border);
   overflow-y: auto;
   background: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.map-sidebar h2 {
-  margin-bottom: 0.25rem;
+.sidebar-header h2 {
+  margin-bottom: 0.15rem;
+  font-size: 1.3rem;
 }
 
-.map-sidebar .pkg-name {
-  font-size: 0.8rem;
+.sidebar-header .pkg-name {
+  font-size: 0.75rem;
   color: var(--text-light);
-  margin-bottom: 1rem;
   font-family: monospace;
+  background: var(--bg);
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
 }
 
+/* Map area */
 .map-container {
   flex: 1;
   position: relative;
@@ -39,29 +68,29 @@
 /* Search box */
 .place-search {
   position: relative;
-  margin-bottom: 1rem;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.6rem 0.75rem;
+  padding: 0.65rem 0.85rem;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 0.9rem;
   background: var(--bg);
   color: var(--text);
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-input:focus {
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.15);
 }
 
 .search-loading {
   font-size: 0.8rem;
   color: var(--text-light);
-  padding: 0.5rem 0;
+  padding: 0.4rem 0;
 }
 
 .search-results {
@@ -71,19 +100,21 @@
   right: 0;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
   list-style: none;
   max-height: 250px;
   overflow-y: auto;
   z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  margin-top: 4px;
 }
 
 .search-results li {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.85rem;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.82rem;
   cursor: pointer;
   border-bottom: 1px solid var(--border);
+  transition: background 0.15s, color 0.15s;
 }
 
 .search-results li:last-child {
@@ -95,9 +126,52 @@
   color: #fff;
 }
 
+/* Route info */
+.route-info {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.route-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.route-toggle input[type='checkbox'] {
+  accent-color: var(--primary);
+  width: 16px;
+  height: 16px;
+}
+
+.route-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.route-stats .stat {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.route-stats .stat strong {
+  color: var(--primary);
+  font-size: 0.95rem;
+}
+
 /* Marker list */
 .marker-list {
-  margin-top: 0.5rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .marker-list-header {
@@ -105,20 +179,27 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+  position: sticky;
+  top: 0;
+  background: var(--bg-secondary);
+  padding: 0.25rem 0;
+  z-index: 1;
 }
 
 .marker-list-header h3 {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .btn-clear {
-  font-size: 0.75rem;
-  padding: 0.2rem 0.5rem;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.6rem;
   background: transparent;
   color: #ef4444;
   border: 1px solid #ef4444;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 
 .btn-clear:hover {
@@ -133,18 +214,68 @@
 .marker-list li {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.4rem 0;
+  padding: 0.5rem 0.4rem;
   border-bottom: 1px solid var(--border);
   gap: 0.5rem;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.marker-list li:hover {
+  background: var(--bg);
+}
+
+.marker-num {
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .marker-name {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   flex: 1;
+  min-width: 0;
+}
+
+.reorder-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.btn-reorder {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 0.55rem;
+  padding: 0px 4px;
+  border-radius: 3px;
+  line-height: 1.3;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-reorder:hover:not(:disabled) {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.btn-reorder:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
 
 .btn-remove {
@@ -153,31 +284,132 @@
   color: #ef4444;
   cursor: pointer;
   font-size: 0.85rem;
-  padding: 0.1rem 0.3rem;
+  padding: 0.15rem 0.35rem;
   flex-shrink: 0;
+  border-radius: 4px;
+  transition: background 0.15s;
 }
 
 .btn-remove:hover {
-  background: #fef2f2;
-  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Numbered marker on the map */
+.numbered-marker {
+  background: transparent;
+  border: none;
+}
+
+.marker-pin {
+  width: 30px;
+  height: 42px;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.marker-pin::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  background: var(--primary, #646cff);
+  border: 2px solid #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: translateX(-50%) rotate(-45deg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.marker-pin span {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+/* Marker popup */
+.marker-popup strong {
+  color: var(--primary, #646cff);
+}
+
+.marker-popup p {
+  margin: 0.25rem 0;
+  font-size: 0.8rem;
+}
+
+.marker-popup small {
+  color: #6b7280;
+  font-family: monospace;
+  font-size: 0.7rem;
+}
+
+/* Leaflet layers control override */
+.leaflet-control-layers {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 8px 12px !important;
+}
+
+.leaflet-control-layers label {
+  font-size: 13px !important;
+  margin-bottom: 2px;
+}
+
+.leaflet-control-layers-separator {
+  border-top: 1px solid #e5e7eb !important;
+  margin: 6px 0 !important;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .map-page {
     flex-direction: column;
-    height: auto;
+    height: 100vh;
   }
 
   .map-sidebar {
-    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 85vw;
+    max-width: 360px;
     min-width: unset;
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
     border-right: none;
-    border-bottom: 1px solid var(--border);
-    max-height: 300px;
+  }
+
+  .map-sidebar.open {
+    transform: translateX(0);
   }
 
   .map-container {
-    height: 60vh;
+    height: 100%;
+  }
+}
+
+@media (min-width: 769px) {
+  .map-sidebar {
+    /* Always visible on desktop */
+    transform: none !important;
   }
 }

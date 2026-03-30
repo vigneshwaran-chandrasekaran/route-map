@@ -8,7 +8,6 @@ export function useMarkers() {
 
   const addMarker = useCallback((place) => {
     setMarkers((prev) => {
-      // Avoid duplicate markers for the same place
       if (prev.some((m) => m.id === place.id)) return prev;
       return [...prev, place];
     });
@@ -22,5 +21,15 @@ export function useMarkers() {
     setMarkers([]);
   }, []);
 
-  return { markers, addMarker, removeMarker, clearMarkers };
+  // Move a marker from one index to another
+  const reorderMarkers = useCallback((fromIndex, toIndex) => {
+    setMarkers((prev) => {
+      const updated = [...prev];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      return updated;
+    });
+  }, []);
+
+  return { markers, addMarker, removeMarker, clearMarkers, reorderMarkers };
 }

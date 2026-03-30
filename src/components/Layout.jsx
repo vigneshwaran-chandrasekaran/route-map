@@ -1,6 +1,11 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
+
+const MAP_ROUTES = ['/leaflet', '/maplibre', '/openlayers'];
 
 function Layout() {
+  const { pathname } = useLocation();
+  const isMapPage = MAP_ROUTES.some((r) => pathname.startsWith(r));
+
   return (
     <>
       <header>
@@ -13,9 +18,11 @@ function Layout() {
       <main>
         <Outlet />
       </main>
-      <footer>
-        <p>&copy; {new Date().getFullYear()} Route Map</p>
-      </footer>
+      {!isMapPage && (
+        <footer>
+          <p>&copy; {new Date().getFullYear()} Route Map</p>
+        </footer>
+      )}
     </>
   );
 }
