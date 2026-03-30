@@ -12,6 +12,7 @@ function Layout() {
         <nav>
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/leaflet">Leaflet</NavLink>
+          <NavLink to="/maplibre">MapLibre</NavLink>
           <NavLink to="/about">About</NavLink>
         </nav>
       </header>

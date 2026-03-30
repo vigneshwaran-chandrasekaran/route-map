@@ -16,7 +16,7 @@ Build a multi-marker map app with place search using **three different open-sour
 | # | Route | Map Library | Package | Status |
 |---|-------|-------------|---------|--------|
 | 1 | `/leaflet` | Leaflet | `react-leaflet` + `leaflet` | ✅ Done |
-| 2 | `/maplibre` | MapLibre GL JS | `react-map-gl` + `maplibre-gl` | 🔲 Todo |
+| 2 | `/maplibre` | MapLibre GL JS | `react-map-gl` + `maplibre-gl` | ✅ Done |
 | 3 | `/openlayers` | OpenLayers | `ol` | 🔲 Todo |
 
 ## Geocoding
@@ -31,6 +31,6 @@ Build a multi-marker map app with place search using **three different open-sour
 ## Implementation Order
 1. ✅ Base React app with Vite + React Router + Axios
 2. ✅ Leaflet map page (`/leaflet`)
-3. 🔲 MapLibre map page (`/maplibre`)
+3. ✅ MapLibre map page (`/maplibre`)
 4. 🔲 OpenLayers map page (`/openlayers`)
 5. 🔲 Update Home page with links to all maps
