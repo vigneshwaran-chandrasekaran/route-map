@@ -1,0 +1,54 @@
+// Deck.gl-specific styles
+
+// Click-active cursor
+.map-container.click-active canvas {
+  cursor: crosshair !important;
+}
+
+// Custom popup overlay
+.deckgl-popup {
+  position: absolute;
+  z-index: 100;
+  background: var(--bg, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  max-width: 280px;
+  transform: translate(-50%, -100%);
+  pointer-events: auto;
+  font-family: inherit;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: var(--bg, #fff);
+    border-right: 1px solid var(--border, #e5e7eb);
+    border-bottom: 1px solid var(--border, #e5e7eb);
+  }
+}
+
+.deckgl-popup-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: var(--text-light, #6b7280);
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  border-radius: 3px;
+
+  &:hover {
+    color: var(--text, #1f2937);
+    background: rgba(0, 0, 0, 0.05);
+  }
+}
