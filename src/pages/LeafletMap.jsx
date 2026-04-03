@@ -7,6 +7,7 @@ import MarkerList from '../components/MarkerList';
 import { SaveGroup, SavedGroups } from '../components/SavedGroups';
 import { useMarkers } from '../hooks/useMarkers';
 import { useSavedGroups } from '../hooks/useSavedGroups';
+import { useUserLocation } from '../hooks/useUserLocation';
 import api from '../api/axios';
 import './LeafletMap.scss';
 
@@ -116,6 +117,19 @@ function getTotalDistance(markers) {
   return total;
 }
 
+// Fly to user location on load
+function FlyToUserLocation({ location }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (location) {
+      map.setView([location.lat, location.lng], 13);
+    }
+  }, [location, map]);
+
+  return null;
+}
+
 // Auto-fit map bounds when markers change
 function FitBounds({ markers }) {
   const map = useMap();
@@ -174,6 +188,7 @@ function MapClickHandler({ enabled, onAdd }) {
 function LeafletMap() {
   const { markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers } = useMarkers();
   const { groups, saveGroup, updateGroup, deleteGroup } = useSavedGroups();
+  const { userLocation, locationError, locationLoading } = useUserLocation();
   const [showRoute, setShowRoute] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [clickToAdd, setClickToAdd] = useState(false);
@@ -231,6 +246,13 @@ function LeafletMap() {
           <h2>Leaflet Map</h2>
           <p className="pkg-name">react-leaflet + leaflet</p>
         </div>
+
+        {locationLoading && (
+          <div className="location-status">Detecting your location…</div>
+        )}
+        {locationError && (
+          <div className="location-status location-error">{locationError}</div>
+        )}
 
         <PlaceSearch onSelect={addMarker} />
 
@@ -311,6 +333,7 @@ function LeafletMap() {
             ))}
           </LayersControl>
 
+          {markers.length === 0 && <FlyToUserLocation location={userLocation} />}
           <FitBounds markers={markers} />
           <MapClickHandler enabled={clickToAdd} onAdd={addMarker} />
 

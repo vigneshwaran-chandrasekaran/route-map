@@ -6,6 +6,7 @@ import MarkerList from '../components/MarkerList';
 import { SaveGroup, SavedGroups } from '../components/SavedGroups';
 import { useMarkers } from '../hooks/useMarkers';
 import { useSavedGroups } from '../hooks/useSavedGroups';
+import { useUserLocation } from '../hooks/useUserLocation';
 import api from '../api/axios';
 import './MapLibreMap.scss';
 
@@ -60,6 +61,7 @@ function MapLibreMap() {
   const mapRef = useRef(null);
   const { markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers } = useMarkers();
   const { groups, saveGroup, updateGroup, deleteGroup } = useSavedGroups();
+  const { userLocation, locationError, locationLoading } = useUserLocation();
   const [showRoute, setShowRoute] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [clickToAdd, setClickToAdd] = useState(false);
@@ -80,6 +82,13 @@ function MapLibreMap() {
       },
     };
   }, [markers]);
+
+  // Fly to user location on load
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !userLocation || markers.length > 0) return;
+    map.flyTo({ center: [userLocation.lng, userLocation.lat], zoom: 13, duration: 800 });
+  }, [userLocation, markers.length]);
 
   // Fit bounds when markers change
   useEffect(() => {
@@ -198,6 +207,13 @@ function MapLibreMap() {
           <h2>MapLibre Map</h2>
           <p className="pkg-name">react-map-gl + maplibre-gl</p>
         </div>
+
+        {locationLoading && (
+          <div className="location-status">Detecting your location…</div>
+        )}
+        {locationError && (
+          <div className="location-status location-error">{locationError}</div>
+        )}
 
         <PlaceSearch onSelect={addMarker} />
 
