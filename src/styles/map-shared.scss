@@ -215,9 +215,54 @@ $success-hover: #059669;
   }
 }
 
+.route-mode {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.route-mode-btn {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.78rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: var(--primary);
+    color: var(--text);
+  }
+
+  &.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+}
+
+.route-loading {
+  font-size: 0.78rem;
+  color: var(--primary);
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.route-error {
+  font-size: 0.78rem;
+  color: #e53e3e;
+}
+
 .route-stats {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
 
   .stat {
     font-size: 0.8rem;

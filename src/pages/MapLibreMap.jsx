@@ -34,11 +34,11 @@ const MAP_STYLES = {
 function MapLibreMap() {
   const mapRef = useRef(null);
   const state = useMapState();
-  const { markers, addMarker, clickToAdd, showRoute, userLocation, handleClearMarkers } = state;
+  const { markers, addMarker, clickToAdd, showRoute, routeMode, roadRoute, userLocation, handleClearMarkers } = state;
   const [popupInfo, setPopupInfo] = useState(null);
   const [activeStyle, setActiveStyle] = useState('street');
 
-  // GeoJSON for the route line
+  // GeoJSON for the straight route line
   const routeGeoJSON = useMemo(() => {
     if (markers.length < 2) return null;
     return {
@@ -49,6 +49,15 @@ function MapLibreMap() {
       },
     };
   }, [markers]);
+
+  // GeoJSON for the road route (from OSRM)
+  const roadRouteGeoJSON = useMemo(() => {
+    if (!roadRoute?.coordinates?.length) return null;
+    return {
+      type: 'Feature',
+      geometry: { type: 'LineString', coordinates: roadRoute.coordinates },
+    };
+  }, [roadRoute]);
 
   // Fly to user location on load
   useEffect(() => {
@@ -119,7 +128,19 @@ function MapLibreMap() {
           <ScaleControl position="bottom-left" />
 
           {/* Route line */}
-          {showRoute && routeGeoJSON && (
+          {showRoute && routeMode === 'road' && roadRouteGeoJSON ? (
+            <Source id="route" type="geojson" data={roadRouteGeoJSON}>
+              <Layer
+                id="route-line"
+                type="line"
+                paint={{
+                  'line-color': '#646cff',
+                  'line-width': 4,
+                  'line-opacity': 0.85,
+                }}
+              />
+            </Source>
+          ) : showRoute && routeGeoJSON ? (
             <Source id="route" type="geojson" data={routeGeoJSON}>
               <Layer
                 id="route-line"
@@ -132,7 +153,7 @@ function MapLibreMap() {
                 }}
               />
             </Source>
-          )}
+          ) : null}
 
           {/* Markers */}
           {markers.map((m, i) => {

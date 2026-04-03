@@ -138,9 +138,15 @@ function MapClickHandler({ enabled, onAdd }) {
 
 function LeafletMap() {
   const state = useMapState();
-  const { markers, addMarker, clickToAdd, showRoute, userLocation } = state;
+  const { markers, addMarker, clickToAdd, showRoute, routeMode, roadRoute, userLocation } = state;
 
   const routePositions = useMemo(() => markers.map((m) => [m.lat, m.lng]), [markers]);
+
+  // Road route coords come as [lng, lat] from OSRM — flip to [lat, lng] for Leaflet
+  const roadPositions = useMemo(
+    () => roadRoute?.coordinates?.map(([lng, lat]) => [lat, lng]) || [],
+    [roadRoute],
+  );
 
   return (
     <div className="map-page">
@@ -170,15 +176,26 @@ function LeafletMap() {
 
           {/* Route polyline */}
           {showRoute && markers.length >= 2 && (
-            <Polyline
-              positions={routePositions}
-              pathOptions={{
-                color: '#646cff',
-                weight: 3,
-                opacity: 0.8,
-                dashArray: '8 4',
-              }}
-            />
+            routeMode === 'road' && roadPositions.length > 0 ? (
+              <Polyline
+                positions={roadPositions}
+                pathOptions={{
+                  color: '#646cff',
+                  weight: 4,
+                  opacity: 0.85,
+                }}
+              />
+            ) : (
+              <Polyline
+                positions={routePositions}
+                pathOptions={{
+                  color: '#646cff',
+                  weight: 3,
+                  opacity: 0.8,
+                  dashArray: '8 4',
+                }}
+              />
+            )
           )}
 
           {/* Markers */}

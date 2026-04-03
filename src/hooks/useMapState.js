@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { useMarkers } from './useMarkers';
 import { useSavedGroups } from './useSavedGroups';
 import { useUserLocation } from './useUserLocation';
+import { useRoadRoute } from './useRoadRoute';
 import { getTotalDistance } from '../utils/geo';
 import { DEFAULT_ICON } from '../utils/markerIcons';
 
@@ -18,8 +19,10 @@ export function useMapState() {
   const [clickToAdd, setClickToAdd] = useState(false);
   const [editingGroup, setEditingGroup] = useState(null);
   const [selectedIcon, setSelectedIcon] = useState(DEFAULT_ICON);
+  const [routeMode, setRouteMode] = useState('straight'); // 'straight' | 'road'
 
   const totalDistance = useMemo(() => getTotalDistance(markers), [markers]);
+  const { roadRoute, roadRouteLoading, roadRouteError } = useRoadRoute(markers, routeMode);
 
   // Wrap addMarker to stamp the currently selected icon
   const addMarkerWithIcon = useCallback(
@@ -79,6 +82,8 @@ export function useMapState() {
     userLocation, locationError, locationLoading,
     // UI state
     showRoute, setShowRoute,
+    routeMode, setRouteMode,
+    roadRoute, roadRouteLoading, roadRouteError,
     sidebarOpen, setSidebarOpen,
     clickToAdd, setClickToAdd,
     editingGroup, setEditingGroup,

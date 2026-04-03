@@ -2,6 +2,7 @@ import PlaceSearch from './PlaceSearch';
 import MarkerList from './MarkerList';
 import IconPicker from './IconPicker';
 import { SaveGroup, SavedGroups } from './SavedGroups';
+import { formatDuration } from '../utils/routing';
 
 /**
  * Shared sidebar used by every map page.
@@ -17,6 +18,8 @@ function MapSidebar({ title, pkgName, state, onClearMarkers, children }) {
     locationLoading, locationError,
     markers, addMarker, removeMarker, updateMarker, reorderMarkers,
     showRoute, setShowRoute,
+    routeMode, setRouteMode,
+    roadRoute, roadRouteLoading, roadRouteError,
     sidebarOpen, setSidebarOpen,
     clickToAdd, setClickToAdd,
     selectedIcon, setSelectedIcon,
@@ -86,13 +89,48 @@ function MapSidebar({ title, pkgName, state, onClearMarkers, children }) {
                 Show route line
               </label>
             </div>
+
+            {showRoute && (
+              <div className="route-mode">
+                <button
+                  className={`route-mode-btn ${routeMode === 'straight' ? 'active' : ''}`}
+                  onClick={() => setRouteMode('straight')}
+                >
+                  ✦ Straight
+                </button>
+                <button
+                  className={`route-mode-btn ${routeMode === 'road' ? 'active' : ''}`}
+                  onClick={() => setRouteMode('road')}
+                >
+                  🛣 Road
+                </button>
+              </div>
+            )}
+
+            {roadRouteLoading && (
+              <div className="route-loading">Loading road route…</div>
+            )}
+            {roadRouteError && (
+              <div className="route-error">⚠ {roadRouteError}</div>
+            )}
+
             <div className="route-stats">
               <span className="stat">
                 <strong>{markers.length}</strong> stops
               </span>
               <span className="stat">
-                <strong>{totalDistance.toFixed(1)}</strong> km
+                <strong>{totalDistance.toFixed(1)}</strong> km straight
               </span>
+              {roadRoute && (
+                <>
+                  <span className="stat">
+                    <strong>{roadRoute.distance.toFixed(1)}</strong> km road
+                  </span>
+                  <span className="stat">
+                    <strong>{formatDuration(roadRoute.duration)}</strong>
+                  </span>
+                </>
+              )}
             </div>
           </div>
         )}

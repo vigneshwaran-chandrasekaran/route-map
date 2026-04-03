@@ -82,12 +82,19 @@ function createMarkerStyle(number, iconKey) {
   });
 }
 
-// Route line style
-const routeLineStyle = new Style({
+// Route line styles
+const straightLineStyle = new Style({
   stroke: new Stroke({
     color: '#646cff',
     width: 3,
     lineDash: [8, 4],
+  }),
+});
+
+const roadLineStyle = new Style({
+  stroke: new Stroke({
+    color: '#646cff',
+    width: 4,
   }),
 });
 
@@ -99,7 +106,7 @@ function OpenLayersMap() {
   const routeLayerRef = useRef(null);
 
   const state = useMapState();
-  const { markers, addMarker, clickToAdd, showRoute, userLocation, handleClearMarkers } = state;
+  const { markers, addMarker, clickToAdd, showRoute, routeMode, roadRoute, userLocation, handleClearMarkers } = state;
   const [activeStyle, setActiveStyle] = useState('street');
   const [popupData, setPopupData] = useState(null);
 
@@ -117,7 +124,7 @@ function OpenLayersMap() {
     const markerSource = new VectorSource();
     const markerLayer = new VectorLayer({ source: markerSource });
     const routeSource = new VectorSource();
-    const routeLayer = new VectorLayer({ source: routeSource, style: routeLineStyle });
+    const routeLayer = new VectorLayer({ source: routeSource, style: straightLineStyle });
 
     tileLayerRef.current = tileLayer;
     markerLayerRef.current = markerLayer;
@@ -232,16 +239,24 @@ function OpenLayersMap() {
 
   // Sync route line
   useEffect(() => {
-    const source = routeLayerRef.current?.getSource();
+    const layer = routeLayerRef.current;
+    const source = layer?.getSource();
     if (!source) return;
 
     source.clear();
     if (showRoute && markers.length >= 2) {
-      const coords = markers.map((m) => fromLonLat([m.lng, m.lat]));
+      let coords;
+      if (routeMode === 'road' && roadRoute?.coordinates?.length) {
+        coords = roadRoute.coordinates.map(([lng, lat]) => fromLonLat([lng, lat]));
+        layer.setStyle(roadLineStyle);
+      } else {
+        coords = markers.map((m) => fromLonLat([m.lng, m.lat]));
+        layer.setStyle(straightLineStyle);
+      }
       const feature = new Feature({ geometry: new LineString(coords) });
       source.addFeature(feature);
     }
-  }, [markers, showRoute]);
+  }, [markers, showRoute, routeMode, roadRoute]);
 
   // Switch tile layer
   useEffect(() => {
