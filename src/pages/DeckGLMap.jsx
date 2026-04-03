@@ -42,8 +42,8 @@ function DeckGLMap() {
   const [popupData, setPopupData] = useState(null);
   const [dimensions, setDimensions] = useState(null);
 
-  // Track container dimensions — DeckGL needs explicit width/height to avoid
-  // a race condition in luma.gl's ResizeObserver vs WebGL device init.
+  // Track container size — DeckGL needs explicit width/height to avoid a race
+  // in luma.gl's ResizeObserver vs WebGL device initialisation.
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -60,11 +60,13 @@ function DeckGLMap() {
   // Fly to user location on load
   useEffect(() => {
     if (!userLocation || markers.length > 0) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing map view with external location
     setViewState((v) => ({ ...v, longitude: userLocation.lng, latitude: userLocation.lat, zoom: 13 }));
   }, [userLocation, markers.length]);
 
   // Fit bounds when markers change
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- syncing map view with marker bounds */
     if (markers.length === 0) return;
     if (markers.length === 1) {
       setViewState((v) => ({ ...v, longitude: markers[0].lng, latitude: markers[0].lat, zoom: 13 }));
@@ -79,6 +81,7 @@ function DeckGLMap() {
       const zoom = maxSpan > 0 ? Math.min(14, Math.max(2, -Math.log2(maxSpan / 360) + 1)) : 13;
       setViewState((v) => ({ ...v, longitude: cLng, latitude: cLat, zoom }));
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [markers]);
 
   const handleMapClick = useCallback(
@@ -100,19 +103,21 @@ function DeckGLMap() {
   // Route path data
   const routePath = useMemo(() => {
     if (!showRoute || markers.length < 2) return [];
-    let coords;
-    if (routeMode === 'road' && roadRoute?.coordinates?.length) {
-      coords = roadRoute.coordinates.map(([lng, lat]) => [lng, lat]);
-    } else {
-      coords = markers.map((m) => [m.lng, m.lat]);
-    }
+    const coords = routeMode === 'road' && roadRoute?.coordinates?.length
+      ? roadRoute.coordinates
+      : markers.map((m) => [m.lng, m.lat]);
     return [{ path: coords }];
   }, [markers, showRoute, routeMode, roadRoute]);
 
   const isRoadRoute = routeMode === 'road' && roadRoute?.coordinates?.length > 0;
 
-  const layers = [
-    // Route line
+  // Prepare label data with stable index
+  const labelData = useMemo(
+    () => markers.map((m, i) => ({ ...m, label: String(i + 1), _idx: i })),
+    [markers],
+  );
+
+  const layers = useMemo(() => [
     new PathLayer({
       id: 'route',
       data: routePath,
@@ -125,10 +130,9 @@ function DeckGLMap() {
       extensions: [new PathStyleExtension({ dash: true })],
       visible: showRoute && markers.length >= 2,
     }),
-    // Marker circles
     new ScatterplotLayer({
       id: 'markers',
-      data: markers,
+      data: labelData,
       getPosition: (d) => [d.lng, d.lat],
       getRadius: 14,
       getFillColor: (d) => hexToRgb(getMarkerIcon(d.icon).color),
@@ -141,17 +145,16 @@ function DeckGLMap() {
         if (info.object) {
           setPopupData({
             ...info.object,
-            index: markers.indexOf(info.object),
+            index: info.object._idx,
             x: info.x,
             y: info.y,
           });
         }
       },
     }),
-    // Marker number labels
     new TextLayer({
       id: 'marker-labels',
-      data: markers.map((m, i) => ({ ...m, label: String(i + 1) })),
+      data: labelData,
       getPosition: (d) => [d.lng, d.lat],
       getText: (d) => d.label,
       getSize: 12,
@@ -161,7 +164,7 @@ function DeckGLMap() {
       getAlignmentBaseline: 'center',
       fontFamily: 'system-ui, sans-serif',
     }),
-  ];
+  ], [routePath, isRoadRoute, showRoute, markers, labelData]);
 
   return (
     <div className="map-page">

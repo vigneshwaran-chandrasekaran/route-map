@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import * as Cesium from 'cesium';
 import MapSidebar from '../components/MapSidebar';
 import StyleSwitcher from '../components/StyleSwitcher';
@@ -45,11 +45,13 @@ function CesiumMapPage() {
   const [popupPos, setPopupPos] = useState(null);
 
   const clickToAddRef = useRef(clickToAdd);
-  clickToAddRef.current = clickToAdd;
   const addMarkerRef = useRef(addMarker);
-  addMarkerRef.current = addMarker;
   const markersRef = useRef(markers);
-  markersRef.current = markers;
+  useEffect(() => {
+    clickToAddRef.current = clickToAdd;
+    addMarkerRef.current = addMarker;
+    markersRef.current = markers;
+  });
 
   // ── Initialise Cesium Viewer once ──
   useEffect(() => {
@@ -117,7 +119,7 @@ function CesiumMapPage() {
       viewer.destroy();
       viewerRef.current = null;
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── Switch imagery ──
   useEffect(() => {
@@ -197,7 +199,6 @@ function CesiumMapPage() {
   }, [markers]);
 
   // ── Sync route line ──
-  const isRoadRoute = routeMode === 'road' && roadRoute?.coordinates?.length;
   useEffect(() => {
     const viewer = viewerRef.current;
     if (!viewer) return;
@@ -210,14 +211,15 @@ function CesiumMapPage() {
 
     if (!showRoute || markers.length < 2) return;
 
+    const useRoad = routeMode === 'road' && roadRoute?.coordinates?.length;
     let flat;
-    if (isRoadRoute) {
+    if (useRoad) {
       flat = roadRoute.coordinates.flat();
     } else {
       flat = markers.flatMap((m) => [m.lng, m.lat]);
     }
 
-    const material = isRoadRoute
+    const material = useRoad
       ? Cesium.Color.fromCssColorString('#646cff')
       : new Cesium.PolylineDashMaterialProperty({
           color: Cesium.Color.fromCssColorString('#646cff'),
@@ -232,7 +234,7 @@ function CesiumMapPage() {
         clampToGround: true,
       },
     });
-  }, [markers, showRoute, routeMode, roadRoute, isRoadRoute]);
+  }, [markers, showRoute, routeMode, roadRoute]);
 
   const handleClear = useCallback(() => {
     handleClearMarkers();

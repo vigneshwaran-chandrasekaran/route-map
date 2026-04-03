@@ -266,6 +266,7 @@ function OpenLayersMap() {
 
   // Close popup when markers change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- dismiss stale popup on marker change
     setPopupData(null);
   }, [markers]);
 

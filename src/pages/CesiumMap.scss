@@ -17,8 +17,8 @@
 .cesium-custom-popup {
   position: absolute;
   z-index: 1000;
-  background: var(--card-bg, #fff);
-  color: var(--text-color, #1a1a2e);
+  background: var(--bg, #fff);
+  color: var(--text, #213547);
   border-radius: 8px;
   padding: 10px 14px;
   min-width: 160px;
@@ -33,7 +33,7 @@
     left: 50%;
     transform: translateX(-50%);
     border: 8px solid transparent;
-    border-top-color: var(--card-bg, #fff);
+    border-top-color: var(--bg, #fff);
     border-bottom: 0;
   }
 }

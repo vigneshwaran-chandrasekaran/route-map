@@ -41,12 +41,14 @@ function PigeonMapPage() {
   // Fly to user location on load
   useEffect(() => {
     if (!userLocation || markers.length > 0) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncing map center with external location
     setCenter([userLocation.lat, userLocation.lng]);
     setZoom(13);
   }, [userLocation, markers.length]);
 
   // Fit bounds when markers change
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- syncing map center/zoom with marker bounds */
     if (markers.length === 0) return;
     if (markers.length === 1) {
       setCenter([markers[0].lat, markers[0].lng]);
@@ -63,6 +65,7 @@ function PigeonMapPage() {
       setCenter([cLat, cLng]);
       setZoom(fitZoom);
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [markers]);
 
   const handleMapClick = useCallback(

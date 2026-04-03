@@ -13,6 +13,7 @@ export function useRoadRoute(markers, routeMode) {
 
   useEffect(() => {
     if (routeMode !== 'road' || markers.length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clearing stale state when route not needed
       setRoadRoute(null);
       setError(null);
       setLoading(false);
