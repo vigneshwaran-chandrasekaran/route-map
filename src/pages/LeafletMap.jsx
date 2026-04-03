@@ -1,14 +1,10 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap, useMapEvents, LayersControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import PlaceSearch from '../components/PlaceSearch';
-import MarkerList from '../components/MarkerList';
-import { SaveGroup, SavedGroups } from '../components/SavedGroups';
-import { useMarkers } from '../hooks/useMarkers';
-import { useSavedGroups } from '../hooks/useSavedGroups';
-import { useUserLocation } from '../hooks/useUserLocation';
-import api from '../api/axios';
+import MapSidebar from '../components/MapSidebar';
+import { useMapState } from '../hooks/useMapState';
+import { reverseGeocode } from '../utils/geo';
 import './LeafletMap.scss';
 
 // Fix default marker icon issue with bundlers
@@ -94,29 +90,6 @@ function createNumberedIcon(number) {
   return icon;
 }
 
-// Calculate distance between two lat/lng points in km (Haversine)
-function haversineDistance(a, b) {
-  const R = 6371;
-  const dLat = ((b.lat - a.lat) * Math.PI) / 180;
-  const dLng = ((b.lng - a.lng) * Math.PI) / 180;
-  const sinLat = Math.sin(dLat / 2);
-  const sinLng = Math.sin(dLng / 2);
-  const h =
-    sinLat * sinLat +
-    Math.cos((a.lat * Math.PI) / 180) *
-      Math.cos((b.lat * Math.PI) / 180) *
-      sinLng * sinLng;
-  return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
-}
-
-function getTotalDistance(markers) {
-  let total = 0;
-  for (let i = 1; i < markers.length; i++) {
-    total += haversineDistance(markers[i - 1], markers[i]);
-  }
-  return total;
-}
-
 // Fly to user location on load
 function FlyToUserLocation({ location }) {
   const map = useMap();
@@ -154,31 +127,7 @@ function MapClickHandler({ enabled, onAdd }) {
     click(e) {
       if (!enabled) return;
       const { lat, lng } = e.latlng;
-
-      api
-        .get('https://nominatim.openstreetmap.org/reverse', {
-          baseURL: '',
-          params: { lat, lon: lng, format: 'json' },
-          headers: { 'User-Agent': 'RouteMapApp/1.0' },
-        })
-        .then((res) => {
-          const name = res.data.display_name || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-          onAdd({
-            id: res.data.place_id || Date.now(),
-            name,
-            lat,
-            lng,
-          });
-        })
-        .catch(() => {
-          // Fallback: add with coordinates as name
-          onAdd({
-            id: Date.now(),
-            name: `${lat.toFixed(4)}, ${lng.toFixed(4)}`,
-            lat,
-            lng,
-          });
-        });
+      reverseGeocode(lat, lng).then(onAdd);
     },
   });
 
@@ -186,134 +135,14 @@ function MapClickHandler({ enabled, onAdd }) {
 }
 
 function LeafletMap() {
-  const { markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers } = useMarkers();
-  const { groups, saveGroup, updateGroup, deleteGroup } = useSavedGroups();
-  const { userLocation, locationError, locationLoading } = useUserLocation();
-  const [showRoute, setShowRoute] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [clickToAdd, setClickToAdd] = useState(false);
-  const [editingGroup, setEditingGroup] = useState(null);
+  const state = useMapState();
+  const { markers, addMarker, clickToAdd, showRoute, userLocation } = state;
 
-  const totalDistance = useMemo(() => getTotalDistance(markers), [markers]);
   const routePositions = useMemo(() => markers.map((m) => [m.lat, m.lng]), [markers]);
-
-  const handleSaveGroup = useCallback((name) => {
-    saveGroup(name, markers);
-  }, [saveGroup, markers]);
-
-  const handleLoadGroup = useCallback((group) => {
-    setMarkers(group.markers);
-  }, [setMarkers]);
-
-  const handleEditGroup = useCallback((group) => {
-    setMarkers(group.markers);
-    setEditingGroup(group);
-  }, [setMarkers]);
-
-  const handleUpdateGroup = useCallback((id, name) => {
-    updateGroup(id, name, markers);
-    setEditingGroup(null);
-  }, [updateGroup, markers]);
-
-  const handleCancelEdit = useCallback(() => {
-    setEditingGroup(null);
-  }, []);
-
-  const handleDeleteGroup = useCallback((id) => {
-    deleteGroup(id);
-    // If the deleted group was being edited, exit edit mode
-    setEditingGroup((prev) => (prev?.id === id ? null : prev));
-  }, [deleteGroup]);
-
-  const handleClearMarkers = useCallback(() => {
-    clearMarkers();
-    setEditingGroup(null);
-  }, [clearMarkers]);
 
   return (
     <div className="map-page">
-      {/* Mobile sidebar toggle */}
-      <button
-        className="sidebar-toggle"
-        onClick={() => setSidebarOpen((v) => !v)}
-        aria-label="Toggle sidebar"
-      >
-        {sidebarOpen ? '✕' : '☰'}
-      </button>
-
-      <div className={`map-sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <div className="sidebar-header">
-          <h2>Leaflet Map</h2>
-          <p className="pkg-name">react-leaflet + leaflet</p>
-        </div>
-
-        {locationLoading && (
-          <div className="location-status">Detecting your location…</div>
-        )}
-        {locationError && (
-          <div className="location-status location-error">{locationError}</div>
-        )}
-
-        <PlaceSearch onSelect={addMarker} />
-
-        <div className="click-to-add">
-          <label>
-            <input
-              type="checkbox"
-              checked={clickToAdd}
-              onChange={(e) => setClickToAdd(e.target.checked)}
-            />
-            Click on map to add marker
-          </label>
-        </div>
-
-        {markers.length >= 2 && (
-          <div className="route-info">
-            <div className="route-toggle">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={showRoute}
-                  onChange={(e) => setShowRoute(e.target.checked)}
-                />
-                Show route line
-              </label>
-            </div>
-            <div className="route-stats">
-              <span className="stat">
-                <strong>{markers.length}</strong> stops
-              </span>
-              <span className="stat">
-                <strong>{totalDistance.toFixed(1)}</strong> km
-              </span>
-            </div>
-          </div>
-        )}
-
-        <MarkerList
-          markers={markers}
-          onRemove={removeMarker}
-          onClear={handleClearMarkers}
-          onReorder={reorderMarkers}
-          numbered
-        />
-
-        <SaveGroup
-          key={editingGroup?.id || 'new'}
-          markers={markers}
-          onSave={handleSaveGroup}
-          editingGroup={editingGroup}
-          onUpdate={handleUpdateGroup}
-          onCancelEdit={handleCancelEdit}
-        />
-        <SavedGroups
-          groups={groups}
-          onLoad={handleLoadGroup}
-          onDelete={handleDeleteGroup}
-          onEdit={handleEditGroup}
-          editingGroupId={editingGroup?.id}
-        />
-      </div>
+      <MapSidebar title="Leaflet Map" pkgName="react-leaflet + leaflet" state={state} />
 
       <div className={`map-container ${clickToAdd ? 'click-active' : ''}`}>
         <MapContainer center={DEFAULT_CENTER} zoom={DEFAULT_ZOOM} className="map">
