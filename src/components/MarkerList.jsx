@@ -1,16 +1,24 @@
 import IconPicker from './IconPicker';
 import { getMarkerIcon } from '../utils/markerIcons';
+import { haversineDistance } from '../utils/geo';
 
-function MarkerList({ markers, onRemove, onClear, onReorder, onUpdateMarker, numbered }) {
+function MarkerList({ markers, onRemove, onClear, onReorder, onReverse, onUpdateMarker, numbered }) {
   if (markers.length === 0) return null;
 
   return (
     <div className="marker-list">
       <div className="marker-list-header">
         <h3>Markers ({markers.length})</h3>
-        <button className="btn-clear" onClick={onClear} aria-label="Clear all markers">
-          Clear All
-        </button>
+        <div className="marker-list-actions">
+          {onReverse && markers.length >= 2 && (
+            <button className="btn-reverse" onClick={onReverse} aria-label="Reverse route order" title="Reverse order">
+              ⇅
+            </button>
+          )}
+          <button className="btn-clear" onClick={onClear} aria-label="Clear all markers">
+            Clear All
+          </button>
+        </div>
       </div>
       <ul>
         {markers.map((m, i) => (
@@ -20,9 +28,16 @@ function MarkerList({ markers, onRemove, onClear, onReorder, onUpdateMarker, num
                 {getMarkerIcon(m.icon).emoji}
               </span>
             )}
-            <span className="marker-name" title={m.name}>
-              {m.name}
-            </span>
+            <div className="marker-info">
+              <span className="marker-name" title={m.name}>
+                {m.name}
+              </span>
+              {i > 0 && (
+                <span className="marker-leg-distance">
+                  ↳ {haversineDistance(markers[i - 1], m).toFixed(1)} km from prev
+                </span>
+              )}
+            </div>
             {onUpdateMarker && (
               <IconPicker
                 value={m.icon}

@@ -1,6 +1,7 @@
 import PlaceSearch from './PlaceSearch';
 import MarkerList from './MarkerList';
 import IconPicker from './IconPicker';
+import ExportMenu from './ExportMenu';
 import { SaveGroup, SavedGroups } from './SavedGroups';
 import { formatDuration } from '../utils/routing';
 
@@ -16,7 +17,7 @@ import { formatDuration } from '../utils/routing';
 function MapSidebar({ title, pkgName, state, onClearMarkers, children }) {
   const {
     locationLoading, locationError,
-    markers, addMarker, removeMarker, updateMarker, reorderMarkers,
+    markers, addMarker, removeMarker, updateMarker, reorderMarkers, reverseMarkers,
     showRoute, setShowRoute,
     routeMode, setRouteMode,
     roadRoute, roadRouteLoading, roadRouteError,
@@ -132,6 +133,8 @@ function MapSidebar({ title, pkgName, state, onClearMarkers, children }) {
                 </>
               )}
             </div>
+
+            <ExportMenu markers={markers} roadRoute={roadRoute} />
           </div>
         )}
 
@@ -140,6 +143,7 @@ function MapSidebar({ title, pkgName, state, onClearMarkers, children }) {
           onRemove={removeMarker}
           onClear={clearFn}
           onReorder={reorderMarkers}
+          onReverse={reverseMarkers}
           onUpdateMarker={updateMarker}
           numbered
         />

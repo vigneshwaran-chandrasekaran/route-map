@@ -38,5 +38,9 @@ export function useMarkers() {
     });
   }, []);
 
-  return { markers, setMarkers, addMarker, removeMarker, updateMarker, clearMarkers, reorderMarkers };
+  const reverseMarkers = useCallback(() => {
+    setMarkers((prev) => [...prev].reverse());
+  }, []);
+
+  return { markers, setMarkers, addMarker, removeMarker, updateMarker, clearMarkers, reorderMarkers, reverseMarkers };
 }

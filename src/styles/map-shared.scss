@@ -276,6 +276,66 @@ $success-hover: #059669;
 }
 
 // ===========================
+// Export menu
+// ===========================
+
+.export-menu {
+  position: relative;
+}
+
+.export-menu-trigger {
+  width: 100%;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+}
+
+.export-menu-dropdown {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.78rem;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.12s;
+
+    &:hover {
+      background: var(--bg-secondary);
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+  }
+}
+
+// ===========================
 // Marker list
 // ===========================
 
@@ -320,6 +380,28 @@ $success-hover: #059669;
   }
 }
 
+.marker-list-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-reverse {
+  font-size: 0.78rem;
+  padding: 0.2rem 0.5rem;
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+
+  &:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+}
+
 .btn-clear {
   font-size: 0.72rem;
   padding: 0.2rem 0.6rem;
@@ -357,6 +439,20 @@ $success-hover: #059669;
   white-space: nowrap;
   flex: 1;
   min-width: 0;
+}
+
+.marker-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.marker-leg-distance {
+  font-size: 0.65rem;
+  color: var(--text-light);
+  font-style: italic;
 }
 
 .reorder-btns {

@@ -3,6 +3,7 @@ import { useMarkers } from './useMarkers';
 import { useSavedGroups } from './useSavedGroups';
 import { useUserLocation } from './useUserLocation';
 import { useRoadRoute } from './useRoadRoute';
+import { useRouteFromURL } from './useRouteFromURL';
 import { getTotalDistance } from '../utils/geo';
 import { DEFAULT_ICON } from '../utils/markerIcons';
 
@@ -10,9 +11,12 @@ import { DEFAULT_ICON } from '../utils/markerIcons';
  * Shared state & callbacks used by every map page (Leaflet, MapLibre, OpenLayers).
  */
 export function useMapState() {
-  const { markers, setMarkers, addMarker, removeMarker, updateMarker, clearMarkers, reorderMarkers } = useMarkers();
+  const { markers, setMarkers, addMarker, removeMarker, updateMarker, clearMarkers, reorderMarkers, reverseMarkers } = useMarkers();
   const { groups, saveGroup, updateGroup, deleteGroup } = useSavedGroups();
   const { userLocation, locationError, locationLoading } = useUserLocation();
+
+  // Load markers from URL hash if present (share links)
+  useRouteFromURL(setMarkers);
 
   const [showRoute, setShowRoute] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -75,7 +79,7 @@ export function useMapState() {
 
   return {
     // Markers
-    markers, setMarkers, addMarker: addMarkerWithIcon, removeMarker, updateMarker, clearMarkers, reorderMarkers,
+    markers, setMarkers, addMarker: addMarkerWithIcon, removeMarker, updateMarker, clearMarkers, reorderMarkers, reverseMarkers,
     // Groups
     groups,
     // User location
