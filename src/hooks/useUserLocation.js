@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-
-const FALLBACK_CENTER = { lat: 11.1271, lng: 78.6569 }; // Tamil Nadu, India
+import { DEFAULT_CENTER } from '../utils/geo';
 
 export function useUserLocation() {
   const [userLocation, setUserLocation] = useState(null);
@@ -46,5 +45,5 @@ export function useUserLocation() {
     );
   }, []);
 
-  return { userLocation, locationError, locationLoading, fallbackCenter: FALLBACK_CENTER };
+  return { userLocation, locationError, locationLoading, fallbackCenter: DEFAULT_CENTER };
 }

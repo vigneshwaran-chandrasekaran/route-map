@@ -1,5 +1,9 @@
 import api from '../api/axios';
 
+// Default map center: Tamil Nadu, India (canonical source of truth)
+export const DEFAULT_CENTER = { lat: 11.1271, lng: 78.6569 };
+export const DEFAULT_ZOOM = 7;
+
 // Haversine distance between two {lat, lng} points in km
 export function haversineDistance(a, b) {
   const R = 6371;

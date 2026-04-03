@@ -15,12 +15,12 @@ import { defaults as defaultControls, ScaleLine } from 'ol/control';
 import 'ol/ol.css';
 
 import MapSidebar from '../components/MapSidebar';
+import StyleSwitcher from '../components/StyleSwitcher';
 import { useMapState } from '../hooks/useMapState';
-import { reverseGeocode } from '../utils/geo';
+import { reverseGeocode, DEFAULT_CENTER } from '../utils/geo';
 import './OpenLayersMap.scss';
 
-// Default center: Tamil Nadu, India
-const DEFAULT_CENTER = fromLonLat([78.6569, 11.1271]);
+const OL_CENTER = fromLonLat([DEFAULT_CENTER.lng, DEFAULT_CENTER.lat]);
 const DEFAULT_ZOOM = 7;
 
 // Free tile layer sources
@@ -125,7 +125,7 @@ function OpenLayersMap() {
       target: mapContainerRef.current,
       layers: [tileLayer, routeLayer, markerLayer],
       view: new View({
-        center: DEFAULT_CENTER,
+        center: OL_CENTER,
         zoom: DEFAULT_ZOOM,
       }),
       controls: defaultControls().extend([new ScaleLine()]),
@@ -263,21 +263,7 @@ function OpenLayersMap() {
         state={state}
         onClearMarkers={handleClear}
       >
-        {/* Style switcher */}
-        <div className="style-switcher">
-          <label className="style-label">Map Style</label>
-          <div className="style-options">
-            {Object.entries(TILE_SOURCES).map(([key, source]) => (
-              <button
-                key={key}
-                className={`style-btn ${activeStyle === key ? 'active' : ''}`}
-                onClick={() => setActiveStyle(key)}
-              >
-                {source.name}
-              </button>
-            ))}
-          </div>
-        </div>
+        <StyleSwitcher styles={TILE_SOURCES} activeStyle={activeStyle} onStyleChange={setActiveStyle} />
       </MapSidebar>
 
       <div className={`map-container ${clickToAdd ? 'click-active' : ''}`}>

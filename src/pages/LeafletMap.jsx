@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import MapSidebar from '../components/MapSidebar';
 import { useMapState } from '../hooks/useMapState';
-import { reverseGeocode } from '../utils/geo';
+import { reverseGeocode, DEFAULT_CENTER } from '../utils/geo';
 import './LeafletMap.scss';
 
 // Fix default marker icon issue with bundlers
@@ -19,8 +19,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Default center: Tamil Nadu, India
-const DEFAULT_CENTER = [11.1271, 78.6569];
+const LEAFLET_CENTER = [DEFAULT_CENTER.lat, DEFAULT_CENTER.lng];
 const DEFAULT_ZOOM = 7;
 
 // Free tile layer sources (no API key needed)
@@ -145,7 +144,7 @@ function LeafletMap() {
       <MapSidebar title="Leaflet Map" pkgName="react-leaflet + leaflet" state={state} />
 
       <div className={`map-container ${clickToAdd ? 'click-active' : ''}`}>
-        <MapContainer center={DEFAULT_CENTER} zoom={DEFAULT_ZOOM} className="map">
+        <MapContainer center={LEAFLET_CENTER} zoom={DEFAULT_ZOOM} className="map">
           <LayersControl position="topright">
             {/* Base layers — only one active at a time */}
             {Object.entries(TILE_LAYERS).map(([key, layer]) => (

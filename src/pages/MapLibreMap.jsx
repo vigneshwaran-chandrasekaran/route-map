@@ -2,12 +2,12 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Map, { Marker, Popup, Source, Layer, NavigationControl, ScaleControl } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import MapSidebar from '../components/MapSidebar';
+import StyleSwitcher from '../components/StyleSwitcher';
 import { useMapState } from '../hooks/useMapState';
-import { reverseGeocode } from '../utils/geo';
+import { reverseGeocode, DEFAULT_CENTER } from '../utils/geo';
 import './MapLibreMap.scss';
 
-// Default center: Tamil Nadu, India
-const DEFAULT_CENTER = { longitude: 78.6569, latitude: 11.1271 };
+const MAPLIBRE_CENTER = { longitude: DEFAULT_CENTER.lng, latitude: DEFAULT_CENTER.lat };
 const DEFAULT_ZOOM = 6;
 
 // Free map styles (no API key needed)
@@ -99,28 +99,14 @@ function MapLibreMap() {
         state={state}
         onClearMarkers={handleClear}
       >
-        {/* Style switcher */}
-        <div className="style-switcher">
-          <label className="style-label">Map Style</label>
-          <div className="style-options">
-            {Object.entries(MAP_STYLES).map(([key, style]) => (
-              <button
-                key={key}
-                className={`style-btn ${activeStyle === key ? 'active' : ''}`}
-                onClick={() => setActiveStyle(key)}
-              >
-                {style.name}
-              </button>
-            ))}
-          </div>
-        </div>
+        <StyleSwitcher styles={MAP_STYLES} activeStyle={activeStyle} onStyleChange={setActiveStyle} />
       </MapSidebar>
 
       <div className={`map-container ${clickToAdd ? 'click-active' : ''}`}>
         <Map
           ref={mapRef}
           initialViewState={{
-            ...DEFAULT_CENTER,
+            ...MAPLIBRE_CENTER,
             zoom: DEFAULT_ZOOM,
           }}
           mapStyle={MAP_STYLES[activeStyle].url}

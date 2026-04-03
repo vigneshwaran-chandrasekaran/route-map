@@ -30,50 +30,6 @@
   }
 }
 
-// Style switcher
-.style-switcher {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.6rem 0.75rem;
-
-  .style-label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-light);
-    margin-bottom: 0.4rem;
-    display: block;
-  }
-
-  .style-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-  }
-
-  .style-btn {
-    padding: 0.3rem 0.65rem;
-    font-size: 0.72rem;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    background: var(--bg-secondary);
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.15s;
-
-    &:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    &.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-  }
-}
-
 // MapLibre popup override
 .maplibregl-popup-content {
   border-radius: 8px !important;

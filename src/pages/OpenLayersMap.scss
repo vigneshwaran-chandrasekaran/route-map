@@ -8,9 +8,6 @@
   height: 100%;
 }
 
-// Style switcher (reuse same pattern as MapLibre)
-// Already defined in MapLibreMap.scss — shared via class names
-
 // Click-active cursor for OpenLayers
 .map-container.click-active .ol-map {
   cursor: crosshair !important;
