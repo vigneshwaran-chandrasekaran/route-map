@@ -34,11 +34,28 @@ function hexToRgb(hex) {
 
 function DeckGLMap() {
   const mapRef = useRef(null);
+  const containerRef = useRef(null);
   const state = useMapState();
   const { markers, addMarker, clickToAdd, showRoute, routeMode, roadRoute, userLocation, handleClearMarkers } = state;
   const [activeStyle, setActiveStyle] = useState('street');
   const [viewState, setViewState] = useState(INITIAL_VIEW);
   const [popupData, setPopupData] = useState(null);
+  const [dimensions, setDimensions] = useState(null);
+
+  // Track container dimensions — DeckGL needs explicit width/height to avoid
+  // a race condition in luma.gl's ResizeObserver vs WebGL device init.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect;
+      if (width > 0 && height > 0) {
+        setDimensions({ width, height });
+      }
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Fly to user location on load
   useEffect(() => {
@@ -157,7 +174,8 @@ function DeckGLMap() {
         <StyleSwitcher styles={MAP_STYLES} activeStyle={activeStyle} onStyleChange={setActiveStyle} />
       </MapSidebar>
 
-      <div className={`map-container ${clickToAdd ? 'click-active' : ''}`}>
+      <div ref={containerRef} className={`map-container ${clickToAdd ? 'click-active' : ''}`}>
+        {dimensions && (
         <DeckGL
           viewState={viewState}
           onViewStateChange={({ viewState: vs }) => setViewState(vs)}
@@ -165,7 +183,9 @@ function DeckGLMap() {
           layers={layers}
           onClick={handleMapClick}
           getCursor={({ isDragging }) => (clickToAdd ? 'crosshair' : isDragging ? 'grabbing' : 'grab')}
-          style={{ width: '100%', height: '100%' }}
+          width={dimensions.width}
+          height={dimensions.height}
+          useDevicePixels={true}
         >
           <Map
             ref={mapRef}
@@ -176,6 +196,7 @@ function DeckGLMap() {
             <ScaleControl position="bottom-left" />
           </Map>
         </DeckGL>
+        )}
 
         {/* Popup */}
         {popupData && (

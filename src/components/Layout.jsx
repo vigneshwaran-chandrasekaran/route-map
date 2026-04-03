@@ -21,7 +21,6 @@ function Layout() {
           <NavLink to="/deckgl">Deck.gl</NavLink>
           <NavLink to="/pigeon">Pigeon</NavLink>
           <NavLink to="/cesium">Cesium</NavLink>
-          <NavLink to="/about">About</NavLink>
           <button
             className="theme-toggle"
             onClick={() => setTheme(THEME_NEXT[theme])}

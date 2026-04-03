@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import About from './pages/About';
 import NotFound from './pages/NotFound';
 import LeafletMap from './pages/LeafletMap';
 import MapLibreMap from './pages/MapLibreMap';
@@ -22,7 +21,6 @@ function App() {
         <Route path="deckgl" element={<DeckGLMap />} />
         <Route path="pigeon" element={<PigeonMap />} />
         <Route path="cesium" element={<CesiumMap />} />
-        <Route path="about" element={<About />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
