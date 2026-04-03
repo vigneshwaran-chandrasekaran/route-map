@@ -1,4 +1,7 @@
-function MarkerList({ markers, onRemove, onClear, onReorder, numbered }) {
+import IconPicker from './IconPicker';
+import { getMarkerIcon } from '../utils/markerIcons';
+
+function MarkerList({ markers, onRemove, onClear, onReorder, onUpdateMarker, numbered }) {
   if (markers.length === 0) return null;
 
   return (
@@ -12,10 +15,21 @@ function MarkerList({ markers, onRemove, onClear, onReorder, numbered }) {
       <ul>
         {markers.map((m, i) => (
           <li key={m.id}>
-            {numbered && <span className="marker-num">{i + 1}</span>}
+            {numbered && (
+              <span className="marker-num" title={getMarkerIcon(m.icon).label}>
+                {getMarkerIcon(m.icon).emoji}
+              </span>
+            )}
             <span className="marker-name" title={m.name}>
               {m.name}
             </span>
+            {onUpdateMarker && (
+              <IconPicker
+                value={m.icon}
+                onChange={(icon) => onUpdateMarker(m.id, { icon })}
+                compact
+              />
+            )}
             {onReorder && (
               <div className="reorder-btns">
                 <button

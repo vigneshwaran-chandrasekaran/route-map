@@ -18,6 +18,7 @@ import MapSidebar from '../components/MapSidebar';
 import StyleSwitcher from '../components/StyleSwitcher';
 import { useMapState } from '../hooks/useMapState';
 import { reverseGeocode, DEFAULT_CENTER } from '../utils/geo';
+import { getMarkerIcon } from '../utils/markerIcons';
 import './OpenLayersMap.scss';
 
 const OL_CENTER = fromLonLat([DEFAULT_CENTER.lng, DEFAULT_CENTER.lat]);
@@ -63,12 +64,13 @@ const TILE_SOURCES = {
   },
 };
 
-// Create numbered marker style
-function createMarkerStyle(number) {
+// Create marker style with icon
+function createMarkerStyle(number, iconKey) {
+  const { color } = getMarkerIcon(iconKey);
   return new Style({
     image: new CircleStyle({
-      radius: 14,
-      fill: new Fill({ color: '#646cff' }),
+      radius: 16,
+      fill: new Fill({ color }),
       stroke: new Stroke({ color: '#fff', width: 2 }),
     }),
     text: new Text({
@@ -157,6 +159,7 @@ function OpenLayersMap() {
           number: feature.get('markerNumber'),
           lat: feature.get('markerLat'),
           lng: feature.get('markerLng'),
+          icon: feature.get('markerIcon'),
           pixel: e.pixel,
         });
       } else if (!clickToAddRef.current) {
@@ -206,7 +209,8 @@ function OpenLayersMap() {
       feature.set('markerNumber', i + 1);
       feature.set('markerLat', m.lat);
       feature.set('markerLng', m.lng);
-      feature.setStyle(createMarkerStyle(i + 1));
+      feature.set('markerIcon', m.icon);
+      feature.setStyle(createMarkerStyle(i + 1, m.icon));
       source.addFeature(feature);
     });
 
@@ -286,7 +290,7 @@ function OpenLayersMap() {
               ✕
             </button>
             <div className="marker-popup">
-              <strong>#{popupData.number}</strong>
+              <strong>{getMarkerIcon(popupData.icon).emoji} #{popupData.number}</strong>
               <p>{popupData.name}</p>
               <small>
                 {popupData.lat.toFixed(4)}, {popupData.lng.toFixed(4)}

@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { DEFAULT_ICON } from '../utils/markerIcons';
 
 /**
  * Shared hook for managing map markers across all map implementations.
@@ -9,12 +10,18 @@ export function useMarkers() {
   const addMarker = useCallback((place) => {
     setMarkers((prev) => {
       if (prev.some((m) => m.id === place.id)) return prev;
-      return [...prev, place];
+      return [...prev, { ...place, icon: place.icon || DEFAULT_ICON }];
     });
   }, []);
 
   const removeMarker = useCallback((id) => {
     setMarkers((prev) => prev.filter((m) => m.id !== id));
+  }, []);
+
+  const updateMarker = useCallback((id, updates) => {
+    setMarkers((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, ...updates } : m)),
+    );
   }, []);
 
   const clearMarkers = useCallback(() => {
@@ -31,5 +38,5 @@ export function useMarkers() {
     });
   }, []);
 
-  return { markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers };
+  return { markers, setMarkers, addMarker, removeMarker, updateMarker, clearMarkers, reorderMarkers };
 }

@@ -5,6 +5,7 @@ import L from 'leaflet';
 import MapSidebar from '../components/MapSidebar';
 import { useMapState } from '../hooks/useMapState';
 import { reverseGeocode, DEFAULT_CENTER } from '../utils/geo';
+import { getMarkerIcon } from '../utils/markerIcons';
 import './LeafletMap.scss';
 
 // Fix default marker icon issue with bundlers
@@ -74,18 +75,20 @@ const OVERLAY_LAYERS = {
   },
 };
 
-// Numbered marker icon (cached to avoid recreating on every render)
+// Marker icon (cached to avoid recreating on every render)
 const iconCache = new Map();
-function createNumberedIcon(number) {
-  if (iconCache.has(number)) return iconCache.get(number);
+function createMarkerIcon(iconKey, number) {
+  const cacheKey = `${iconKey}-${number}`;
+  if (iconCache.has(cacheKey)) return iconCache.get(cacheKey);
+  const { emoji, color } = getMarkerIcon(iconKey);
   const icon = L.divIcon({
     className: 'numbered-marker',
-    html: `<div class="marker-pin"><span>${number}</span></div>`,
-    iconSize: [30, 42],
-    iconAnchor: [15, 42],
-    popupAnchor: [0, -36],
+    html: `<div class="marker-pin" style="--marker-color:${color}"><span class="marker-pin-emoji">${emoji}</span><span class="marker-pin-num">${number}</span></div>`,
+    iconSize: [34, 46],
+    iconAnchor: [17, 46],
+    popupAnchor: [0, -40],
   });
-  iconCache.set(number, icon);
+  iconCache.set(cacheKey, icon);
   return icon;
 }
 
@@ -178,16 +181,16 @@ function LeafletMap() {
             />
           )}
 
-          {/* Numbered markers */}
+          {/* Markers */}
           {markers.map((m, i) => (
             <Marker
               key={m.id}
               position={[m.lat, m.lng]}
-              icon={createNumberedIcon(i + 1)}
+              icon={createMarkerIcon(m.icon, i + 1)}
             >
               <Popup>
                 <div className="marker-popup">
-                  <strong>#{i + 1}</strong>
+                  <strong>{getMarkerIcon(m.icon).emoji} #{i + 1}</strong>
                   <p>{m.name}</p>
                   <small>
                     {m.lat.toFixed(4)}, {m.lng.toFixed(4)}

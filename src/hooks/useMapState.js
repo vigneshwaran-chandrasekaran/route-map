@@ -3,12 +3,13 @@ import { useMarkers } from './useMarkers';
 import { useSavedGroups } from './useSavedGroups';
 import { useUserLocation } from './useUserLocation';
 import { getTotalDistance } from '../utils/geo';
+import { DEFAULT_ICON } from '../utils/markerIcons';
 
 /**
  * Shared state & callbacks used by every map page (Leaflet, MapLibre, OpenLayers).
  */
 export function useMapState() {
-  const { markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers } = useMarkers();
+  const { markers, setMarkers, addMarker, removeMarker, updateMarker, clearMarkers, reorderMarkers } = useMarkers();
   const { groups, saveGroup, updateGroup, deleteGroup } = useSavedGroups();
   const { userLocation, locationError, locationLoading } = useUserLocation();
 
@@ -16,8 +17,15 @@ export function useMapState() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [clickToAdd, setClickToAdd] = useState(false);
   const [editingGroup, setEditingGroup] = useState(null);
+  const [selectedIcon, setSelectedIcon] = useState(DEFAULT_ICON);
 
   const totalDistance = useMemo(() => getTotalDistance(markers), [markers]);
+
+  // Wrap addMarker to stamp the currently selected icon
+  const addMarkerWithIcon = useCallback(
+    (place) => addMarker({ ...place, icon: place.icon || selectedIcon }),
+    [addMarker, selectedIcon],
+  );
 
   const handleSaveGroup = useCallback(
     (name) => { saveGroup(name, markers); },
@@ -64,7 +72,7 @@ export function useMapState() {
 
   return {
     // Markers
-    markers, setMarkers, addMarker, removeMarker, clearMarkers, reorderMarkers,
+    markers, setMarkers, addMarker: addMarkerWithIcon, removeMarker, updateMarker, clearMarkers, reorderMarkers,
     // Groups
     groups,
     // User location
@@ -74,6 +82,7 @@ export function useMapState() {
     sidebarOpen, setSidebarOpen,
     clickToAdd, setClickToAdd,
     editingGroup, setEditingGroup,
+    selectedIcon, setSelectedIcon,
     // Computed
     totalDistance,
     // Callbacks

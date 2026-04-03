@@ -7,42 +7,56 @@
   cursor: crosshair;
 }
 
-// Numbered marker on the map
+// Marker on the map
 .numbered-marker {
   background: transparent;
   border: none;
 }
 
 .marker-pin {
-  width: 30px;
-  height: 42px;
+  width: 34px;
+  height: 46px;
   position: relative;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 
   &::after {
     content: '';
     position: absolute;
     top: 0;
     left: 50%;
-    transform: translateX(-50%);
-    width: 28px;
-    height: 28px;
-    background: var(--primary, #646cff);
+    width: 32px;
+    height: 32px;
+    background: var(--marker-color, var(--primary, #646cff));
     border: 2px solid #fff;
     border-radius: 50% 50% 50% 0;
     transform: translateX(-50%) rotate(-45deg);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
-  span {
+  .marker-pin-emoji {
     position: relative;
     z-index: 1;
+    font-size: 0.85rem;
+    line-height: 1;
+    margin-top: 4px;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+  }
+
+  .marker-pin-num {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
     color: #fff;
-    font-size: 0.7rem;
+    font-size: 0.55rem;
     font-weight: 700;
-    margin-top: 3px;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 3px;
+    padding: 0 3px;
+    line-height: 1.3;
   }
 }
 

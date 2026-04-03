@@ -2,31 +2,57 @@
 // MapLibre-specific styles
 // ===========================
 
-// Custom numbered marker
+// Custom marker
 .maplibre-marker-pin {
-  width: 30px;
-  height: 30px;
-  background: var(--primary, #646cff);
-  border: 2px solid #fff;
-  border-radius: 50% 50% 50% 0;
-  transform: rotate(-45deg);
+  width: 34px;
+  height: 42px;
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: transform 0.15s;
 
-  span {
-    transform: rotate(45deg);
-    color: #fff;
-    font-size: 0.7rem;
-    font-weight: 700;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 32px;
+    height: 32px;
+    background: var(--marker-color, var(--primary, #646cff));
+    border: 2px solid #fff;
+    border-radius: 50% 50% 50% 0;
+    transform: translateX(-50%) rotate(-45deg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .maplibre-marker-emoji {
+    position: relative;
+    z-index: 1;
+    font-size: 0.85rem;
     line-height: 1;
+    margin-top: 4px;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+  }
+
+  .maplibre-marker-num {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    color: #fff;
+    font-size: 0.55rem;
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 3px;
+    padding: 0 3px;
+    line-height: 1.3;
   }
 
   &:hover {
-    transform: rotate(-45deg) scale(1.15);
+    transform: scale(1.15);
   }
 }
 

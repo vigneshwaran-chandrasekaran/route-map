@@ -5,6 +5,7 @@ import MapSidebar from '../components/MapSidebar';
 import StyleSwitcher from '../components/StyleSwitcher';
 import { useMapState } from '../hooks/useMapState';
 import { reverseGeocode, DEFAULT_CENTER } from '../utils/geo';
+import { getMarkerIcon } from '../utils/markerIcons';
 import './MapLibreMap.scss';
 
 const MAPLIBRE_CENTER = { longitude: DEFAULT_CENTER.lng, latitude: DEFAULT_CENTER.lat };
@@ -133,23 +134,27 @@ function MapLibreMap() {
             </Source>
           )}
 
-          {/* Numbered markers */}
-          {markers.map((m, i) => (
-            <Marker
-              key={m.id}
-              longitude={m.lng}
-              latitude={m.lat}
-              anchor="bottom"
-              onClick={(e) => {
-                e.originalEvent.stopPropagation();
-                setPopupInfo({ ...m, index: i });
-              }}
-            >
-              <div className="maplibre-marker-pin">
-                <span>{i + 1}</span>
-              </div>
-            </Marker>
-          ))}
+          {/* Markers */}
+          {markers.map((m, i) => {
+            const icon = getMarkerIcon(m.icon);
+            return (
+              <Marker
+                key={m.id}
+                longitude={m.lng}
+                latitude={m.lat}
+                anchor="bottom"
+                onClick={(e) => {
+                  e.originalEvent.stopPropagation();
+                  setPopupInfo({ ...m, index: i });
+                }}
+              >
+                <div className="maplibre-marker-pin" style={{ '--marker-color': icon.color }}>
+                  <span className="maplibre-marker-emoji">{icon.emoji}</span>
+                  <span className="maplibre-marker-num">{i + 1}</span>
+                </div>
+              </Marker>
+            );
+          })}
 
           {/* Popup */}
           {popupInfo && (
@@ -162,7 +167,7 @@ function MapLibreMap() {
               closeOnClick={false}
             >
               <div className="marker-popup">
-                <strong>#{popupInfo.index + 1}</strong>
+                <strong>{getMarkerIcon(popupInfo.icon).emoji} #{popupInfo.index + 1}</strong>
                 <p>{popupInfo.name}</p>
                 <small>
                   {popupInfo.lat.toFixed(4)}, {popupInfo.lng.toFixed(4)}

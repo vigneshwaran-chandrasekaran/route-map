@@ -1,5 +1,6 @@
 import PlaceSearch from './PlaceSearch';
 import MarkerList from './MarkerList';
+import IconPicker from './IconPicker';
 import { SaveGroup, SavedGroups } from './SavedGroups';
 
 /**
@@ -14,10 +15,11 @@ import { SaveGroup, SavedGroups } from './SavedGroups';
 function MapSidebar({ title, pkgName, state, onClearMarkers, children }) {
   const {
     locationLoading, locationError,
-    markers, addMarker, removeMarker, reorderMarkers,
+    markers, addMarker, removeMarker, updateMarker, reorderMarkers,
     showRoute, setShowRoute,
     sidebarOpen, setSidebarOpen,
     clickToAdd, setClickToAdd,
+    selectedIcon, setSelectedIcon,
     totalDistance,
     editingGroup,
     groups,
@@ -65,6 +67,11 @@ function MapSidebar({ title, pkgName, state, onClearMarkers, children }) {
           </label>
         </div>
 
+        <div className="new-marker-icon">
+          <span className="new-marker-icon-label">New marker icon</span>
+          <IconPicker value={selectedIcon} onChange={setSelectedIcon} />
+        </div>
+
         {children}
 
         {markers.length >= 2 && (
@@ -95,6 +102,7 @@ function MapSidebar({ title, pkgName, state, onClearMarkers, children }) {
           onRemove={removeMarker}
           onClear={clearFn}
           onReorder={reorderMarkers}
+          onUpdateMarker={updateMarker}
           numbered
         />
 
